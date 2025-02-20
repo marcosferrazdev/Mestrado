@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Patient, usePatientStore } from '../store/usePatientStore';
 import { Link, useNavigate } from 'react-router-dom';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Trash2, Edit } from 'lucide-react';
 
 function PatientList() {
   const { patients, fetchPatients, deletePatient, updatePatient } = usePatientStore();
@@ -33,6 +33,7 @@ function PatientList() {
       <table className="w-full border-collapse border border-gray-300">
         <thead>
           <tr className="bg-gray-200">
+            <th className="border p-2 text-center">Ações</th>
             <th className="border p-2">Nome</th>
             <th className="border p-2">Telefone</th>
             <th className="border p-2">Cidade</th>
@@ -41,12 +42,28 @@ function PatientList() {
             <th className="border p-2">Data Próx. Coleta</th>
             <th className="border p-2">Comentário</th>
             <th className="border p-2">Transporte</th>
-            <th className="border p-2">Ações</th>
           </tr>
         </thead>
         <tbody>
           {patients.map((patient) => (
             <tr key={patient.id} className="border">
+              <td className="border p-2 text-center flex items-center justify-center gap-3">
+                <button
+                  onClick={() => deletePatient(patient.id)}
+                  className="text-red-600 hover:text-red-800"
+                  title="Excluir"
+                >
+                  <Trash2 className="w-5 h-5" />
+                </button>
+
+                <Link
+                  to={`/editar/${patient.id}`}
+                  className="text-blue-600 hover:text-blue-800"
+                  title="Editar"
+                >
+                  <Edit className="w-5 h-5" />
+                </Link>
+              </td>
               <td className="border p-2">{patient.name}</td>
               <td className="border p-2">{patient.phone}</td>
               <td className="border p-2">{patient.recruitmentCity}</td>
@@ -55,21 +72,6 @@ function PatientList() {
               <td className="border p-2">{patient.nextCollectionDate}</td>
               <td className="border p-2">{patient.callComments}</td>
               <td className="border p-2">{patient.transportation}</td>
-              <td className="border p-2 text-center">
-                <button
-                  onClick={() => deletePatient(patient.id)}
-                  className="px-2 py-1 text-white bg-red-600 rounded hover:bg-red-700"
-                >
-                  Excluir
-                </button>
-                
-                <Link
-                  to={`/editar/${patient.id}`}
-                  className="ml-2 px-2 py-1 text-white bg-blue-600 rounded hover:bg-blue-700"
-                >
-                  Editar
-                </Link>
-              </td>
             </tr>
           ))}
         </tbody>
