@@ -4,6 +4,7 @@ import Home from './pages/Home';
 import CandidateRegistration from './pages/CandidateRegistration';
 import PatientList from './pages/PatientList';
 import EditPatient from './pages/EditPatient';
+import Relatorios from './pages/Relatorios';
 
 function App() {
   return (
@@ -12,7 +13,7 @@ function App() {
       <Route path="/cadastro" element={<CandidateRegistration />} />
       <Route path="/pacientes" element={<PatientList />} />
       <Route path="/editar/:id" element={<EditPatient />} />
-
+      <Route path="/relatorios" element={<Relatorios />} />
     </Routes>
   );
 }

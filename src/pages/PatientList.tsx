@@ -52,53 +52,41 @@ function PatientList() {
         <ArrowLeft className="w-5 h-5 mr-2" /> Voltar
       </button>
       <h2 className="text-2xl font-bold mb-4">Lista de Pacientes</h2>
-      <table className="w-full border-collapse border border-gray-300">
-        <thead>
-          <tr className="bg-gray-200">
-            <th className="border p-2 text-center">Ações</th>
-            <th className="border p-2">Nome</th>
-            <th className="border p-2">Telefone</th>
-            <th className="border p-2">Cidade</th>
-            <th className="border p-2">Diagnóstico</th>
-            <th className="border p-2">Fase</th>
-            <th className="border p-2">Data Próx. Coleta</th>
-            <th className="border p-2">Comentário</th>
-            <th className="border p-2">Transporte</th>
-          </tr>
-        </thead>
-        <tbody>
-          {patients.map((patient) => (
-            <tr key={patient.id} className="border">
-              <td className="border p-2 text-center flex items-center justify-center gap-3">
-                <button
-                  onClick={() => handleDeleteClick(patient.id)}
-                  className="text-red-600 hover:text-red-800"
-                  title="Excluir"
-                >
-                  <Trash2 className="w-5 h-5" />
-                </button>
 
-                <Link
-                  to={`/editar/${patient.id}`}
-                  className="text-blue-600 hover:text-blue-800"
-                  title="Editar"
-                >
-                  <Edit className="w-5 h-5" />
-                </Link>
-              </td>
-              <td className="border p-2">{patient.name}</td>
-              <td className="border p-2">{patient.phone}</td>
-              <td className="border p-2">{patient.recruitmentCity}</td>
-              <td className="border p-2">{patient.diagnosis}</td>
-              <td className="border p-2">{patient.phase}</td>
-              <td className="border p-2">{formatDate(patient.nextCollectionDate)}</td>
-              <td className="border p-2">{patient.callComments}</td>
-              <td className="border p-2">{patient.transportation}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {patients.map((patient) => (
+          <div key={patient.id} className="bg-white p-6 rounded-lg shadow-md flex flex-col justify-between">
+            <div>
+              <h3 className="mb-3 text-xl font-bold text-gray-900">{patient.name}</h3>
+              <p className="text-gray-700"><span className="font-semibold">Telefone:</span> {patient.phone}</p>
+              <p className="text-gray-700"><span className="font-semibold">Cidade:</span> {patient.recruitmentCity}</p>
+              <p className="text-gray-700"><span className="font-semibold">Diagnóstico:</span> {patient.diagnosis}</p>
+              <p className="text-gray-700"><span className="font-semibold">Fase:</span> {patient.phase}</p>
+              <p className="text-gray-700"><span className="font-semibold">Próx. Coleta:</span> {formatDate(patient.nextCollectionDate)}</p>
+              <p className="text-gray-700"><span className="font-semibold">Comentário:</span> {patient.callComments}</p>
+              <p className="text-gray-700"><span className="font-semibold">Transporte:</span> {patient.transportation}</p>
+            </div>
+            <div className="flex justify-between mt-4">
+              <button
+                onClick={() => handleDeleteClick(patient.id)}
+                className="text-red-600 hover:text-red-800"
+                title="Excluir"
+              >
+                <Trash2 className="w-6 h-6" />
+              </button>
+              <Link
+                to={`/editar/${patient.id}`}
+                className="text-blue-600 hover:text-blue-800"
+                title="Editar"
+              >
+                <Edit className="w-6 h-6" />
+              </Link>
+            </div>
+          </div>
+        ))}
+      </div>
 
+      {/* Modal de Confirmação de Exclusão */}
       {showDeleteModal && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white p-6 rounded-lg shadow-lg">
@@ -118,24 +106,6 @@ function PatientList() {
               </button>
             </div>
           </div>
-        </div>
-      )}
-
-      {editingPatient && (
-        <div className="mt-4 p-4 border rounded bg-gray-100">
-          <h3 className="text-lg font-bold">Editar Paciente</h3>
-          <input
-            type="text"
-            value={editData.name || ''}
-            onChange={(e) => setEditData({ ...editData, name: e.target.value })}
-            className="border p-2 rounded w-full mt-2"
-          />
-          <button
-            onClick={handleUpdate}
-            className="mt-2 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
-          >
-            Salvar
-          </button>
         </div>
       )}
     </div>

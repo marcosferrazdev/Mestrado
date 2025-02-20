@@ -3,18 +3,36 @@ import { Link } from 'react-router-dom';
 
 function Home() {
   return (
-    <div className="min-h-screen bg-gray-100">
-      <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
-        <h1 className="text-4xl font-extrabold text-gray-900 text-center">Sistema de Gestão de Pacientes</h1>
-        <div className="mt-16 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-          <Link to="/cadastro" className="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition">
-            <h3 className="text-2xl font-bold text-gray-900 mb-4">Cadastro de Pacientes</h3>
-            <p className="text-gray-500">Registre novos pacientes.</p>
+    <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center px-6 py-16">
+      <div className="text-center max-w-2xl">
+        <h1 className="text-4xl font-extrabold text-gray-900">Sistema de Gestão de Pacientes</h1>
+        <p className="text-gray-500 mt-2">Gerencie o cadastro e acompanhamento de pacientes de forma eficiente</p>
+      </div>
+
+      <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-4xl w-full">
+        {/* Cadastro de Pacientes */}
+        <div className="bg-white p-8 rounded-lg shadow-lg hover:shadow-xl transition">
+          <h3 className="text-2xl font-bold text-gray-900">Cadastro de Pacientes</h3>
+          <p className="text-gray-500">Registre novos pacientes no sistema com todas as informações necessárias para acompanhamento.</p>
+          <Link to="/cadastro" className="text-indigo-600 mt-4 inline-block hover:underline">
+            Acessar cadastro →
           </Link>
-          <Link to="/pacientes" className="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition">
-            <h3 className="text-2xl font-bold text-gray-900 mb-4">Lista de Pacientes</h3>
-            <p className="text-gray-500">Visualize e gerencie os pacientes cadastrados.</p>
+        </div>
+
+        {/* Lista de Pacientes (Ativado) */}
+        <div className="bg-white p-8 rounded-lg shadow-lg hover:shadow-xl transition">
+          <h3 className="text-2xl font-bold text-gray-900">Lista de Pacientes</h3>
+          <p className="text-gray-500">Visualize e gerencie os pacientes cadastrados.</p>
+          <Link to="/pacientes" className="text-indigo-600 mt-4 inline-block hover:underline">
+            Acessar lista →
           </Link>
+        </div>
+
+        {/* Relatórios (Em breve) */}
+        <div className="bg-white p-8 rounded-lg shadow-md opacity-50 cursor-not-allowed">
+          <h3 className="text-2xl font-bold text-gray-900">Relatórios</h3>
+          <p className="text-gray-500">Gere relatórios e análises sobre os pacientes e atendimentos.</p>
+          <span className="text-gray-400 mt-4 inline-block">Em breve →</span>
         </div>
       </div>
     </div>
