@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { supabase } from '../services/supabaseClient';
 
 const candidateSchema = z.object({
@@ -21,30 +21,45 @@ const candidateSchema = z.object({
 type CandidateForm = z.infer<typeof candidateSchema>;
 
 function CandidateRegistration() {
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<CandidateForm>({
     resolver: zodResolver(candidateSchema),
   });
 
-  const onSubmit = async (data: CandidateForm) => {
-    console.log(data);
-    try {
-      const { data: insertedData, error } = await supabase
-      .from('patients') // Nome correto
-      .insert([data]);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
 
+  const onSubmit = async (data: CandidateForm) => {
+    try {
+      const { error } = await supabase.from('patients').insert([data]);
 
       if (error) {
-        console.error('Error inserting data:', error);
-      } else {
-        console.log('Data inserted successfully:', insertedData);
+        console.error('Erro ao cadastrar paciente:', error);
+        alert('Erro ao cadastrar paciente. Tente novamente.');
+        return;
       }
+
+      setShowSuccessModal(true); // Exibe a modal de sucesso
+      reset(); // Limpa o formulário após o cadastro
+
+      // Fecha a modal automaticamente após 2 segundos e redireciona
+      setTimeout(() => {
+        setShowSuccessModal(false);
+        navigate('/');
+      }, 2000);
     } catch (error) {
-      console.error('Unexpected error:', error);
+      console.error('Erro inesperado:', error);
+      alert('Ocorreu um erro inesperado. Tente novamente.');
     }
+  };
+
+  const handleCloseModal = () => {
+    setShowSuccessModal(false);
+    navigate('/'); // Redireciona imediatamente para a tela inicial
   };
 
   return (
@@ -53,14 +68,12 @@ function CandidateRegistration() {
         <div className="relative px-4 py-10 bg-white mx-8 md:mx-0 shadow rounded-3xl sm:p-10">
           <div className="max-w-md mx-auto">
             <div className="flex items-center space-x-5 justify-between mb-8">
-              <Link
-                to="/"
-                className="text-indigo-600 hover:text-indigo-800 flex items-center"
-              >
+              <Link to="/" className="text-indigo-600 hover:text-indigo-800 flex items-center">
                 ← Voltar
               </Link>
               <h2 className="text-2xl font-bold text-gray-800">Cadastro de Pacientes</h2>
             </div>
+
             <div className="divide-y divide-gray-200">
               <div className="py-8 text-base leading-6 space-y-4 text-gray-700 sm:text-lg sm:leading-7">
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
@@ -118,7 +131,6 @@ function CandidateRegistration() {
                     />
                     {errors.nextCollectionDate && <p className="text-red-500 text-sm mt-1">{errors.nextCollectionDate.message}</p>}
                   </div>
-
                   <div>
                     <label className="block text-sm font-medium text-gray-700 ">Comentário sobre Ligação</label>
                     <textarea
@@ -156,6 +168,20 @@ function CandidateRegistration() {
           </div>
         </div>
       </div>
+
+      {showSuccessModal && (
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg text-center">
+            <h2 className="text-xl font-semibold mb-4">Paciente cadastrado com sucesso!</h2>
+            <button
+              onClick={handleCloseModal}
+              className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700"
+            >
+              OK
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -14,6 +14,8 @@ function PatientList() {
   const { patients, fetchPatients, deletePatient, updatePatient } = usePatientStore();
   const [editingPatient, setEditingPatient] = useState<null | Patient>(null);
   const [editData, setEditData] = useState<Partial<Patient>>({});
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [selectedPatientId, setSelectedPatientId] = useState<string | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -25,6 +27,19 @@ function PatientList() {
       await updatePatient(editingPatient.id, editData);
       setEditingPatient(null);
       setEditData({});
+    }
+  };
+
+  const handleDeleteClick = (patientId: string) => {
+    setSelectedPatientId(patientId);
+    setShowDeleteModal(true);
+  };
+
+  const confirmDeletePatient = async () => {
+    if (selectedPatientId) {
+      await deletePatient(selectedPatientId);
+      setShowDeleteModal(false);
+      setSelectedPatientId(null);
     }
   };
 
@@ -56,7 +71,7 @@ function PatientList() {
             <tr key={patient.id} className="border">
               <td className="border p-2 text-center flex items-center justify-center gap-3">
                 <button
-                  onClick={() => deletePatient(patient.id)}
+                  onClick={() => handleDeleteClick(patient.id)}
                   className="text-red-600 hover:text-red-800"
                   title="Excluir"
                 >
@@ -83,6 +98,28 @@ function PatientList() {
           ))}
         </tbody>
       </table>
+
+      {showDeleteModal && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg">
+            <h3 className="text-lg font-bold mb-4">Tem certeza que deseja excluir?</h3>
+            <div className="flex justify-end gap-4">
+              <button
+                onClick={() => setShowDeleteModal(false)}
+                className="px-4 py-2 bg-gray-400 text-white rounded hover:bg-gray-500"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={confirmDeletePatient}
+                className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+              >
+                Excluir
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {editingPatient && (
         <div className="mt-4 p-4 border rounded bg-gray-100">
