@@ -19,7 +19,7 @@ function Home() {
           </Link>
         </div>
 
-        {/* Lista de Pacientes */}
+        {/* Lista de Pacientes (Ativado) */}
         <div className="bg-white p-8 rounded-lg shadow-lg hover:shadow-xl transition">
           <h3 className="text-2xl font-bold text-gray-900">Lista de Pacientes</h3>
           <p className="text-gray-500">Visualize e gerencie os pacientes cadastrados.</p>
@@ -28,13 +28,11 @@ function Home() {
           </Link>
         </div>
 
-        {/* Relatórios (Liberado) */}
-        <div className="bg-white p-8 rounded-lg shadow-lg hover:shadow-xl transition">
+        {/* Relatórios (Em breve) */}
+        <div className="bg-white p-8 rounded-lg shadow-md opacity-50 cursor-not-allowed">
           <h3 className="text-2xl font-bold text-gray-900">Relatórios</h3>
           <p className="text-gray-500">Gere relatórios e análises sobre os pacientes e atendimentos.</p>
-          <Link to="/relatorios" className="text-indigo-600 mt-4 inline-block hover:underline">
-            Acessar relatórios →
-          </Link>
+          <span className="text-gray-400 mt-4 inline-block">Em breve →</span>
         </div>
       </div>
     </div>
