@@ -3,6 +3,13 @@ import { Patient, usePatientStore } from '../store/usePatientStore';
 import { Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Trash2, Edit } from 'lucide-react';
 
+// Função para formatar a data no formato "DD/MM/YYYY"
+const formatDate = (dateString: string) => {
+  if (!dateString) return '';
+  const date = new Date(dateString);
+  return date.toLocaleDateString('pt-BR'); // Formato DD/MM/AAAA
+};
+
 function PatientList() {
   const { patients, fetchPatients, deletePatient, updatePatient } = usePatientStore();
   const [editingPatient, setEditingPatient] = useState<null | Patient>(null);
@@ -69,7 +76,7 @@ function PatientList() {
               <td className="border p-2">{patient.recruitmentCity}</td>
               <td className="border p-2">{patient.diagnosis}</td>
               <td className="border p-2">{patient.phase}</td>
-              <td className="border p-2">{patient.nextCollectionDate}</td>
+              <td className="border p-2">{formatDate(patient.nextCollectionDate)}</td>
               <td className="border p-2">{patient.callComments}</td>
               <td className="border p-2">{patient.transportation}</td>
             </tr>
