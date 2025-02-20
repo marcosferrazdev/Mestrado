@@ -3,8 +3,8 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Patient, usePatientStore } from '../store/usePatientStore';
 import { ArrowLeft } from 'lucide-react';
+import { Patient, usePatientStore } from '../store/usePatientStore.js';
 
 const patientSchema = z.object({
   name: z.string().min(1, 'Nome é obrigatório'),

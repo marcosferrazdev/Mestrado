@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Patient, usePatientStore } from '../store/usePatientStore';
 import { Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Trash2, Edit } from 'lucide-react';
+import { Patient, usePatientStore } from '../store/usePatientStore.js';
 
 // Função para formatar a data no formato "DD/MM/YYYY"
 const formatDate = (dateString: string) => {

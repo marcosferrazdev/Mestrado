@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { supabase } from '../services/supabaseClient';
+import { supabase } from '../services/supabaseClient.js';
 
 export interface Patient {
   id: string;
