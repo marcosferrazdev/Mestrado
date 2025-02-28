@@ -374,7 +374,7 @@ function Relatorios() {
           setCurrentAssistantMessage("");
           setIsLoading(false);
         },
-        30 // Velocidade de digitação
+        20 // Velocidade de digitação
       );
     } catch (error) {
       console.error("Erro ao interagir com o assistente:", error);
