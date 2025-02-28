@@ -1,16 +1,51 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { supabase } from "../services/supabaseClient.js"; // Certifique-se de que o caminho está correto
 import { toast, Toaster } from "react-hot-toast";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 
 function Login() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [loadingForgot, setLoadingForgot] = useState(false);
+
+  // Processa o access_token do link de confirmação
+  useEffect(() => {
+    const hashParams = new URLSearchParams(location.hash.replace("#", ""));
+    const accessToken = hashParams.get("access_token");
+    const refreshToken = hashParams.get("refresh_token");
+    const type = hashParams.get("type");
+
+    if (accessToken && refreshToken && type === "signup") {
+      // Autentica o usuário com o access_token e refresh_token
+      const authenticateWithToken = async () => {
+        try {
+          const { error } = await supabase.auth.setSession({
+            access_token: accessToken,
+            refresh_token: refreshToken,
+          });
+
+          if (error) {
+            console.error("Erro ao autenticar com o token:", error.message);
+            toast.error("Erro ao confirmar o e-mail: " + error.message);
+            return;
+          }
+
+          toast.success("E-mail confirmado com sucesso! Você está logado.");
+          navigate("/home"); // Redireciona para /home após a autenticação
+        } catch (error) {
+          console.error("Erro ao processar o token:", error);
+          toast.error("Erro ao confirmar o e-mail. Tente novamente.");
+        }
+      };
+
+      authenticateWithToken();
+    }
+  }, [location, navigate]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();

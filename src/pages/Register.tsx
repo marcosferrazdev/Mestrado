@@ -6,7 +6,7 @@ import { Eye, EyeOff } from "lucide-react";
 
 function Register() {
   const navigate = useNavigate();
-  const [name, setName] = useState(""); // Campo para o nome
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -18,7 +18,6 @@ function Register() {
     e.preventDefault();
     setLoading(true);
 
-    // Validação básica
     if (!name || !email || !password || !confirmPassword) {
       toast.error("Por favor, preencha todos os campos.");
       setLoading(false);
@@ -48,7 +47,7 @@ function Register() {
         email,
         password,
         options: {
-          emailRedirectTo: `${import.meta.env.VITE_APP_URL}/login`,
+          emailRedirectTo: `${import.meta.env.VITE_APP_URL}/login`, // Redireciona para /login após confirmação
           data: {
             full_name: name, // Salva o nome no user_metadata
           },
@@ -63,7 +62,7 @@ function Register() {
 
       if (data.user) {
         toast.success(
-          "Cadastro realizado com sucesso! Faça login para continuar."
+          "Cadastro realizado com sucesso! Verifique seu e-mail para confirmar sua conta."
         );
         navigate("/login");
       }
