@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../services/supabaseClient.js"; // Certifique-se de que o caminho está correto
 import { toast, Toaster } from "react-hot-toast";
-import { Eye, EyeOff, Loader2 } from "lucide-react"; // Adicionando Loader2 para o spinner
+import { Eye, EyeOff, Loader2 } from "lucide-react";
 
 function Login() {
   const navigate = useNavigate();
@@ -10,7 +10,7 @@ function Login() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [loadingForgot, setLoadingForgot] = useState(false); // Controla o loading do "Esqueceu sua senha?"
+  const [loadingForgot, setLoadingForgot] = useState(false);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -101,79 +101,92 @@ function Login() {
             </p>
           </div>
         ) : (
-          <form onSubmit={handleLogin} className="space-y-6">
-            <div>
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium text-gray-700"
-              >
-                E-mail
-              </label>
-              <input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="mt-1 w-full p-3 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                placeholder="Digite seu e-mail"
-                disabled={loading}
-              />
-            </div>
-
-            <div>
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Senha
-              </label>
-              <div className="relative">
+          <>
+            <form onSubmit={handleLogin} className="space-y-6">
+              <div>
+                <label
+                  htmlFor="email"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  E-mail
+                </label>
                 <input
-                  id="password"
-                  type={showPassword ? "text" : "password"}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   className="mt-1 w-full p-3 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                  placeholder="Digite sua senha"
+                  placeholder="Digite seu e-mail"
                   disabled={loading}
                 />
+              </div>
+
+              <div>
+                <label
+                  htmlFor="password"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Senha
+                </label>
+                <div className="relative">
+                  <input
+                    id="password"
+                    type={showPassword ? "text" : "password"}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="mt-1 w-full p-3 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                    placeholder="Digite sua senha"
+                    disabled={loading}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 hover:text-gray-700"
+                  >
+                    {showPassword ? (
+                      <EyeOff className="h-5 w-5" />
+                    ) : (
+                      <Eye className="h-5 w-5" />
+                    )}
+                  </button>
+                </div>
+              </div>
+
+              <div className="flex justify-end">
                 <button
                   type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 hover:text-gray-700"
+                  onClick={handleForgotPassword}
+                  className="text-sm text-indigo-600 hover:text-indigo-800 disabled:opacity-50"
+                  disabled={loading || loadingForgot}
                 >
-                  {showPassword ? (
-                    <EyeOff className="h-5 w-5" />
-                  ) : (
-                    <Eye className="h-5 w-5" />
-                  )}
+                  Esqueceu sua senha?
                 </button>
               </div>
-            </div>
 
-            <div className="flex justify-end">
               <button
-                type="button"
-                onClick={handleForgotPassword}
-                className="text-sm text-indigo-600 hover:text-indigo-800 disabled:opacity-50"
-                disabled={loading || loadingForgot}
+                type="submit"
+                disabled={loading}
+                className={`w-full py-3 px-4 rounded-md text-white font-medium ${
+                  loading
+                    ? "bg-gray-400 cursor-not-allowed"
+                    : "bg-indigo-600 hover:bg-indigo-700"
+                }`}
               >
-                Esqueceu sua senha?
+                {loading ? "Entrando..." : "Entrar"}
               </button>
+            </form>
+            <div className="mt-4 text-center">
+              <p className="text-sm text-gray-600">
+                Não tem uma conta?{" "}
+                <button
+                  onClick={() => navigate("/register")}
+                  className="text-indigo-600 hover:text-indigo-800"
+                >
+                  Cadastre-se
+                </button>
+              </p>
             </div>
-
-            <button
-              type="submit"
-              disabled={loading}
-              className={`w-full py-3 px-4 rounded-md text-white font-medium ${
-                loading
-                  ? "bg-gray-400 cursor-not-allowed"
-                  : "bg-indigo-600 hover:bg-indigo-700"
-              }`}
-            >
-              {loading ? "Entrando..." : "Entrar"}
-            </button>
-          </form>
+          </>
         )}
       </div>
     </div>

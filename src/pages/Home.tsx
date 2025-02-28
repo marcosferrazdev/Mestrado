@@ -1,10 +1,32 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "../services/supabaseClient.js"; // Certifique-se de que o caminho está correto
 import { toast } from "react-hot-toast";
+import { User, ChevronDown, LogOut } from "lucide-react";
 
 function Home() {
   const navigate = useNavigate();
+  const [userName, setUserName] = useState("");
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  // Obtém o nome do usuário da sessão
+  useEffect(() => {
+    const fetchUserName = async () => {
+      const { data, error } = await supabase.auth.getUser();
+      if (error) {
+        console.error("Erro ao obter usuário:", error.message);
+        toast.error("Erro ao carregar dados do usuário.");
+        return;
+      }
+
+      if (data.user) {
+        const fullName = data.user.user_metadata?.full_name || "Usuário";
+        setUserName(fullName);
+      }
+    };
+
+    fetchUserName();
+  }, []);
 
   const handleLogout = async () => {
     try {
@@ -23,13 +45,30 @@ function Home() {
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col px-6 py-16">
-      <div className="flex justify-end mb-6">
-        <button
-          onClick={handleLogout}
-          className="py-2 px-4 bg-red-600 text-white rounded-md hover:bg-red-700"
+      <div className="flex justify-end mb-6 relative">
+        <div
+          className="flex items-center space-x-2 cursor-pointer"
+          onClick={() => setIsDropdownOpen(!isDropdownOpen)}
         >
-          Sair
-        </button>
+          <User className="h-6 w-6 text-gray-600" />
+          <span className="text-gray-800 font-medium">{userName}</span>
+          <ChevronDown
+            className={`h-5 w-5 text-gray-600 transform transition-transform ${
+              isDropdownOpen ? "rotate-180" : ""
+            }`}
+          />
+        </div>
+        {isDropdownOpen && (
+          <div className="absolute top-10 right-0 bg-white shadow-lg rounded-md py-2 w-40">
+            <button
+              onClick={handleLogout}
+              className="flex items-center space-x-2 px-4 py-2 text-gray-700 hover:bg-gray-100 w-full text-left"
+            >
+              <LogOut className="h-5 w-5" />
+              <span>Sair</span>
+            </button>
+          </div>
+        )}
       </div>
 
       <div className="flex-1 flex flex-col items-center justify-center">
