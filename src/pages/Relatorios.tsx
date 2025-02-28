@@ -83,7 +83,7 @@ function Relatorios() {
     });
     doc.setFontSize(12);
     doc.text("UFVJM", 20, 25);
-    doc.text("UFSCAR", 277, 25, { align: "right" }); // Ajustado para UFSCAR
+    doc.text("UFSCAR", 277, 25, { align: "right" });
 
     // Dados do Participante
     doc.setFontSize(14);
@@ -135,7 +135,6 @@ function Relatorios() {
       doc.setFont("helvetica", "normal");
     };
 
-    // Desenha a tabela e calcula a posição final Y
     let y = startYTable;
     drawTableHeader(y);
     y += 10;
@@ -177,7 +176,6 @@ function Relatorios() {
       y += maxHeight;
     });
 
-    // Linhas verticais e horizontais da tabela
     for (let i = 0; i < 5; i++) {
       const x = columnXPositions[i] || 277;
       doc.line(x, startYTable, x, y > maxPageHeight ? 20 : y);
@@ -185,11 +183,9 @@ function Relatorios() {
     doc.line(20, startYTable, 277, startYTable);
     doc.line(20, y > maxPageHeight ? 20 : y, 277, y > maxPageHeight ? 20 : y);
 
-    // Força a criação de uma nova página para "Observações Gerais" e "Pontos de Atenção"
     doc.addPage();
     y = 20;
 
-    // Adiciona as seções "Observações Gerais" e "Pontos de Atenção"
     const observationsSection =
       reportContent
         .split("\n\n")
@@ -300,7 +296,7 @@ function Relatorios() {
     const systemPrompt = `
       Você é um assistente médico especializado em gerar relatórios fisioterapêuticos claros e profissionais sobre pacientes. Você tem acesso aos seguintes dados do paciente:\n${patientData}\n
 
-      Quando solicitado para gerar um relatório, siga rigorosamente o formato abaixo, preenchendo com base nos dados do paciente fornecidos. Não adicione informações que não estejam nos dados fornecidos. Use "Não disponível" quando um dado não estiver presente. O relatório deve ser formatado como texto puro, sem Markdown ou símbolos desnecessários, e deve ser estruturado exatamente como o exemplo fornecido. Certifique-se de usar português correto, evitando erros gramaticais ou ortográficos (ex.: "realization" deve ser "realizar", "asperado" deve ser "esperada", "efetos" deve ser "efeitos", "menal" deve ser "mental", "nerhuma" deve be "nenhuma", "retlete" deve ser "reflete", "limitaçōes" deve ser "limitações").
+      Quando solicitado para gerar um relatório, siga rigorosamente o formato abaixo, preenchindo com base nos dados do paciente fornecidos. Não adicione informações que não estejam nos dados fornecidos. Use "Não disponível" quando um dado não estiver presente. O relatório deve ser formatado como texto puro, sem Markdown ou símbolos desnecessários, e deve ser estruturado exatamente como o exemplo fornecido. Certifique-se de usar português correto, evitando erros gramaticais ou ortográficos (ex.: "realization" deve ser "realizar", "asperado" deve ser "esperada", "efetos" deve ser "efeitos", "menal" deve ser "mental", "nerhuma" deve ser "nenhuma", "retlete" deve ser "reflete", "limitaçōes" deve ser "limitações").
 
       **Formato do Relatório:**
 
@@ -378,7 +374,7 @@ function Relatorios() {
           setCurrentAssistantMessage("");
           setIsLoading(false);
         },
-        20 // Velocidade de digitação
+        30 // Velocidade de digitação
       );
     } catch (error) {
       console.error("Erro ao interagir com o assistente:", error);
@@ -427,22 +423,26 @@ function Relatorios() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col py-6 px-6">
-      <div className="container mx-auto">
+    <div className="min-h-screen bg-gray-100 flex flex-col">
+      <div className="container mx-auto flex-1 flex flex-col py-4 px-4 sm:px-6 lg:px-8">
         <button
           onClick={() => navigate("/")}
           className="flex items-center text-blue-600 hover:text-blue-800 mb-4"
         >
           <ArrowLeft className="w-5 h-5 mr-2" /> Voltar
         </button>
-        <h1 className="text-3xl font-bold text-gray-900 mb-6">Relatórios</h1>
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-6">
+          Relatórios
+        </h1>
 
         <div className="mb-8">
-          <h2 className="text-xl font-semibold mb-4">Selecione um Paciente</h2>
+          <h2 className="text-lg sm:text-xl font-semibold mb-4">
+            Selecione um Paciente
+          </h2>
           <select
             value={selectedPatient?.id || ""}
             onChange={handlePatientSelect}
-            className="w-full sm:w-1/2 p-3 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="w-full p-3 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
           >
             <option value="" disabled>
               Selecione um paciente
@@ -455,11 +455,11 @@ function Relatorios() {
           </select>
         </div>
 
-        <div className="mb-8 flex gap-4">
+        <div className="mb-8 flex flex-col sm:flex-row gap-4">
           <button
             onClick={handleGenerateReport}
             disabled={!selectedPatient || isLoading}
-            className={`w-full sm:w-auto py-2 px-4 rounded-md text-white font-medium ${
+            className={`w-full py-2 px-4 rounded-md text-white font-medium ${
               !selectedPatient || isLoading
                 ? "bg-gray-400 cursor-not-allowed"
                 : "bg-indigo-600 hover:bg-indigo-700"
@@ -474,7 +474,7 @@ function Relatorios() {
               isLoading ||
               !chatMessages.some((msg) => msg.role === "assistant")
             }
-            className={`w-full sm:w-auto py-2 px-4 rounded-md text-white font-medium flex items-center gap-2 ${
+            className={`w-full py-2 px-4 rounded-md text-white font-medium flex items-center justify-center gap-2 ${
               !selectedPatient ||
               isLoading ||
               !chatMessages.some((msg) => msg.role === "assistant")
@@ -487,7 +487,7 @@ function Relatorios() {
           <button
             onClick={handleClearChat}
             disabled={chatMessages.length === 0 || isLoading}
-            className={`w-full sm:w-auto py-2 px-4 rounded-md text-white font-medium ${
+            className={`w-full py-2 px-4 rounded-md text-white font-medium ${
               chatMessages.length === 0 || isLoading
                 ? "bg-gray-400 cursor-not-allowed"
                 : "bg-red-600 hover:bg-red-700"
@@ -497,11 +497,13 @@ function Relatorios() {
           </button>
         </div>
 
-        <div className="bg-white p-6 rounded-lg shadow-md">
-          <h2 className="text-xl font-semibold mb-4">Chat com o Assistente</h2>
+        <div className="bg-white p-4 sm:p-6 rounded-lg shadow-md flex-1 flex flex-col">
+          <h2 className="text-lg sm:text-xl font-semibold mb-4">
+            Chat com o Assistente
+          </h2>
           <div
             ref={chatContainerRef}
-            className="h-64 overflow-y-auto border rounded-md p-4 mb-4"
+            className="flex-1 min-h-[16rem] max-h-[50vh] overflow-y-auto border rounded-md p-4 mb-4"
           >
             {chatMessages.length === 0 ? (
               <p className="text-gray-500">
@@ -564,20 +566,20 @@ function Relatorios() {
 
           <form
             onSubmit={handleSendQuestion}
-            className="flex items-center gap-2"
+            className="flex flex-col sm:flex-row items-center gap-2 mt-auto"
           >
             <input
               type="text"
               value={userInput}
               onChange={(e) => setUserInput(e.target.value)}
               placeholder="Faça uma pergunta sobre o paciente..."
-              className="flex-1 p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
               disabled={isLoading || !selectedPatient}
             />
             <button
               type="submit"
               disabled={isLoading || !selectedPatient || !userInput.trim()}
-              className={`py-2 px-4 rounded-md text-white font-medium ${
+              className={`w-full sm:w-auto py-2 px-4 rounded-md text-white font-medium ${
                 isLoading || !selectedPatient || !userInput.trim()
                   ? "bg-gray-400 cursor-not-allowed"
                   : "bg-indigo-600 hover:bg-indigo-700"
