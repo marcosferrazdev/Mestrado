@@ -16,7 +16,7 @@ function Home() {
       <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-4xl w-full">
         {/* Cadastro de Pacientes */}
         <div className="bg-white p-8 rounded-lg shadow-lg hover:shadow-xl transition">
-          <h3 className="text-2xl font-bold text-gray-900">
+          <h3 className="text-2xl font-bold text-gray-900 mb-4">
             Cadastro de Pacientes
           </h3>
           <p className="text-gray-500">
@@ -33,7 +33,7 @@ function Home() {
 
         {/* Lista de Pacientes */}
         <div className="bg-white p-8 rounded-lg shadow-lg hover:shadow-xl transition">
-          <h3 className="text-2xl font-bold text-gray-900">
+          <h3 className="text-2xl font-bold text-gray-900 mb-4">
             Lista de Pacientes
           </h3>
           <p className="text-gray-500">
@@ -49,7 +49,7 @@ function Home() {
 
         {/* Relatórios */}
         <div className="bg-white p-8 rounded-lg shadow-lg hover:shadow-xl transition">
-          <h3 className="text-2xl font-bold text-gray-900">Relatórios</h3>
+          <h3 className="text-2xl font-bold text-gray-900 mb-4">Relatórios</h3>
           <p className="text-gray-500">
             Gere relatórios e análises sobre os pacientes e atendimentos.
           </p>
@@ -63,7 +63,7 @@ function Home() {
 
         {/* Exportar Pacientes */}
         <div className="bg-white p-8 rounded-lg shadow-lg hover:shadow-xl transition">
-          <h3 className="text-2xl font-bold text-gray-900">
+          <h3 className="text-2xl font-bold text-gray-900 mb-4">
             Exportar Pacientes
           </h3>
           <p className="text-gray-500">
