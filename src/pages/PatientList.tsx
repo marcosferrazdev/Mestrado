@@ -1,21 +1,24 @@
-import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Trash2, Edit } from 'lucide-react';
-import { Patient, usePatientStore } from '../store/usePatientStore.js';
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { ArrowLeft, Trash2, Edit } from "lucide-react";
+import { Patient, usePatientStore } from "../store/usePatientStore.js";
 
 // Função para formatar a data no formato "DD/MM/YYYY"
 const formatDate = (dateString: string) => {
-  if (!dateString) return '';
+  if (!dateString) return "";
   const date = new Date(dateString);
-  return date.toLocaleDateString('pt-BR'); // Formato DD/MM/AAAA
+  return date.toLocaleDateString("pt-BR"); // Formato DD/MM/AAAA
 };
 
 function PatientList() {
-  const { patients, fetchPatients, deletePatient, updatePatient } = usePatientStore();
+  const { patients, fetchPatients, deletePatient, updatePatient } =
+    usePatientStore();
   const [editingPatient, setEditingPatient] = useState<null | Patient>(null);
   const [editData, setEditData] = useState<Partial<Patient>>({});
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [selectedPatientId, setSelectedPatientId] = useState<string | null>(null);
+  const [selectedPatientId, setSelectedPatientId] = useState<string | null>(
+    null
+  );
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -46,7 +49,7 @@ function PatientList() {
   return (
     <div className="container mx-auto p-6">
       <button
-        onClick={() => navigate('/')}
+        onClick={() => navigate("/home")}
         className="flex items-center text-blue-600 hover:text-blue-800 mb-4"
       >
         <ArrowLeft className="w-5 h-5 mr-2" /> Voltar
@@ -55,16 +58,40 @@ function PatientList() {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {patients.map((patient) => (
-          <div key={patient.id} className="bg-white p-6 rounded-lg shadow-md flex flex-col justify-between">
+          <div
+            key={patient.id}
+            className="bg-white p-6 rounded-lg shadow-md flex flex-col justify-between"
+          >
             <div>
-              <h3 className="mb-3 text-xl font-bold text-gray-900">{patient.name}</h3>
-              <p className="text-gray-700"><span className="font-semibold">Telefone:</span> {patient.phone}</p>
-              <p className="text-gray-700"><span className="font-semibold">Cidade:</span> {patient.recruitmentCity}</p>
-              <p className="text-gray-700"><span className="font-semibold">Diagnóstico:</span> {patient.diagnosis}</p>
-              <p className="text-gray-700"><span className="font-semibold">Fase:</span> {patient.phase}</p>
-              <p className="text-gray-700"><span className="font-semibold">Próx. Coleta:</span> {formatDate(patient.nextCollectionDate)}</p>
-              <p className="text-gray-700"><span className="font-semibold">Comentário:</span> {patient.callComments}</p>
-              <p className="text-gray-700"><span className="font-semibold">Transporte:</span> {patient.transportation}</p>
+              <h3 className="mb-3 text-xl font-bold text-gray-900">
+                {patient.name}
+              </h3>
+              <p className="text-gray-700">
+                <span className="font-semibold">Telefone:</span> {patient.phone}
+              </p>
+              <p className="text-gray-700">
+                <span className="font-semibold">Cidade:</span>{" "}
+                {patient.recruitmentCity}
+              </p>
+              <p className="text-gray-700">
+                <span className="font-semibold">Diagnóstico:</span>{" "}
+                {patient.diagnosis}
+              </p>
+              <p className="text-gray-700">
+                <span className="font-semibold">Fase:</span> {patient.phase}
+              </p>
+              <p className="text-gray-700">
+                <span className="font-semibold">Próx. Coleta:</span>{" "}
+                {formatDate(patient.nextCollectionDate)}
+              </p>
+              <p className="text-gray-700">
+                <span className="font-semibold">Comentário:</span>{" "}
+                {patient.callComments}
+              </p>
+              <p className="text-gray-700">
+                <span className="font-semibold">Transporte:</span>{" "}
+                {patient.transportation}
+              </p>
             </div>
             <div className="flex justify-between mt-4">
               <button
@@ -90,7 +117,9 @@ function PatientList() {
       {showDeleteModal && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white p-6 rounded-lg shadow-lg">
-            <h3 className="text-lg font-bold mb-4">Tem certeza que deseja excluir?</h3>
+            <h3 className="text-lg font-bold mb-4">
+              Tem certeza que deseja excluir?
+            </h3>
             <div className="flex justify-end gap-4">
               <button
                 onClick={() => setShowDeleteModal(false)}

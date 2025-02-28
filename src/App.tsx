@@ -10,11 +10,16 @@ import Phase1Identification from "./pages/Phase1Identification.js";
 import Phase1TestsAndQuestionnaires from "./pages/Phase1TestsAndQuestionnaires.js";
 import Phase2Identification from "./pages/Phase2Identification.js";
 import Phase2TestsAndQuestionnaires from "./pages/Phase2TestsAndQuestionnaires.js";
+import Login from "./pages/Login.js";
+import ResetPassword from "./pages/ResetPassword.js";
 
 function App() {
   return (
     <Routes>
-      <Route path="/" element={<Home />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/" element={<Login />} />
+      <Route path="/reset-password" element={<ResetPassword />} />
+      <Route path="/home" element={<Home />} />
       <Route path="/cadastro" element={<CandidateRegistration />} />
       <Route path="/pacientes" element={<PatientList />} />
       <Route path="/editar/:id" element={<EditPatient />} />

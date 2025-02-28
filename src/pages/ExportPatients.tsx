@@ -16,7 +16,7 @@ function ExportPatients() {
     <div className="min-h-screen bg-gray-100 flex flex-col py-6 px-6">
       <div className="container mx-auto">
         <button
-          onClick={() => navigate("/")}
+          onClick={() => navigate("/home")}
           className="flex items-center text-blue-600 hover:text-blue-800 mb-4"
         >
           <ArrowLeft className="w-5 h-5 mr-2" /> Voltar
