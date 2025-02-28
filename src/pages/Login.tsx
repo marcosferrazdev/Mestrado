@@ -2,18 +2,20 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../services/supabaseClient.js"; // Certifique-se de que o caminho está correto
 import { toast, Toaster } from "react-hot-toast";
+import { Eye, EyeOff, Loader2 } from "lucide-react"; // Adicionando Loader2 para o spinner
 
 function Login() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [loadingForgot, setLoadingForgot] = useState(false); // Controla o loading do "Esqueceu sua senha?"
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
-    // Validação básica
     if (!email || !password) {
       toast.error("Por favor, preencha todos os campos.");
       setLoading(false);
@@ -46,7 +48,7 @@ function Login() {
 
       if (data.user) {
         toast.success("Login realizado com sucesso!");
-        navigate("/home"); // Redireciona para /home após o login
+        navigate("/home");
       }
     } catch (error) {
       toast.error("Erro ao fazer login. Tente novamente.");
@@ -60,13 +62,16 @@ function Login() {
       return;
     }
 
+    setLoadingForgot(true);
+
     try {
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${import.meta.env.VITE_APP_URL}/reset-password`, // Usa a variável de ambiente
+        redirectTo: `${import.meta.env.VITE_APP_URL}/reset-password`,
       });
 
       if (error) {
         toast.error("Erro ao enviar o e-mail de recuperação: " + error.message);
+        setLoadingForgot(false);
         return;
       }
 
@@ -75,6 +80,8 @@ function Login() {
       );
     } catch (error) {
       toast.error("Erro ao enviar o e-mail de recuperação. Tente novamente.");
+    } finally {
+      setLoadingForgot(false);
     }
   };
 
@@ -85,66 +92,89 @@ function Login() {
         <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-6 text-center">
           Login
         </h2>
-        <form onSubmit={handleLogin} className="space-y-6">
-          <div>
-            <label
-              htmlFor="email"
-              className="block text-sm font-medium text-gray-700"
-            >
-              E-mail
-            </label>
-            <input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="mt-1 w-full p-3 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-              placeholder="Digite seu e-mail"
-              disabled={loading}
-            />
-          </div>
 
-          <div>
-            <label
-              htmlFor="password"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Senha
-            </label>
-            <input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="mt-1 w-full p-3 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-              placeholder="Digite sua senha"
-              disabled={loading}
-            />
+        {loadingForgot ? (
+          <div className="flex flex-col items-center justify-center h-48">
+            <Loader2 className="h-10 w-10 text-indigo-600 animate-spin" />
+            <p className="mt-4 text-gray-600">
+              Enviando e-mail de recuperação...
+            </p>
           </div>
+        ) : (
+          <form onSubmit={handleLogin} className="space-y-6">
+            <div>
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-gray-700"
+              >
+                E-mail
+              </label>
+              <input
+                id="email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="mt-1 w-full p-3 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                placeholder="Digite seu e-mail"
+                disabled={loading}
+              />
+            </div>
 
-          <div className="flex justify-end">
+            <div>
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Senha
+              </label>
+              <div className="relative">
+                <input
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="mt-1 w-full p-3 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                  placeholder="Digite sua senha"
+                  disabled={loading}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 hover:text-gray-700"
+                >
+                  {showPassword ? (
+                    <EyeOff className="h-5 w-5" />
+                  ) : (
+                    <Eye className="h-5 w-5" />
+                  )}
+                </button>
+              </div>
+            </div>
+
+            <div className="flex justify-end">
+              <button
+                type="button"
+                onClick={handleForgotPassword}
+                className="text-sm text-indigo-600 hover:text-indigo-800 disabled:opacity-50"
+                disabled={loading || loadingForgot}
+              >
+                Esqueceu sua senha?
+              </button>
+            </div>
+
             <button
-              type="button"
-              onClick={handleForgotPassword}
-              className="text-sm text-indigo-600 hover:text-indigo-800"
+              type="submit"
               disabled={loading}
+              className={`w-full py-3 px-4 rounded-md text-white font-medium ${
+                loading
+                  ? "bg-gray-400 cursor-not-allowed"
+                  : "bg-indigo-600 hover:bg-indigo-700"
+              }`}
             >
-              Esqueceu sua senha?
+              {loading ? "Entrando..." : "Entrar"}
             </button>
-          </div>
-
-          <button
-            type="submit"
-            disabled={loading}
-            className={`w-full py-3 px-4 rounded-md text-white font-medium ${
-              loading
-                ? "bg-gray-400 cursor-not-allowed"
-                : "bg-indigo-600 hover:bg-indigo-700"
-            }`}
-          >
-            {loading ? "Entrando..." : "Entrar"}
-          </button>
-        </form>
+          </form>
+        )}
       </div>
     </div>
   );
