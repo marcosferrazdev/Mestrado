@@ -5,7 +5,11 @@ import CandidateRegistration from "./pages/CandidateRegistration.js";
 import PatientList from "./pages/PatientList.js";
 import EditPatient from "./pages/EditPatient.js";
 import Relatorios from "./pages/Relatorios.js";
-import ExportPatients from "./pages/ExportPatients.js"; // Importa a nova página
+import ExportPatients from "./pages/ExportPatients.js";
+import Phase1Identification from "./pages/Phase1Identification.js";
+import Phase1TestsAndQuestionnaires from "./pages/Phase1TestsAndQuestionnaires.js";
+import Phase2Identification from "./pages/Phase2Identification.js";
+import Phase2TestsAndQuestionnaires from "./pages/Phase2TestsAndQuestionnaires.js";
 
 function App() {
   return (
@@ -15,7 +19,24 @@ function App() {
       <Route path="/pacientes" element={<PatientList />} />
       <Route path="/editar/:id" element={<EditPatient />} />
       <Route path="/relatorios" element={<Relatorios />} />
-      <Route path="/exportar" element={<ExportPatients />} /> {/* Nova rota */}
+      <Route path="/exportar" element={<ExportPatients />} />
+      {/* Novas rotas para as tabelas */}
+      <Route
+        path="/exportar/fase1-identificacao"
+        element={<Phase1Identification />}
+      />
+      <Route
+        path="/exportar/fase1-testes-questionarios"
+        element={<Phase1TestsAndQuestionnaires />}
+      />
+      <Route
+        path="/exportar/fase2-identificacao"
+        element={<Phase2Identification />}
+      />
+      <Route
+        path="/exportar/fase2-testes-questionarios"
+        element={<Phase2TestsAndQuestionnaires />}
+      />
     </Routes>
   );
 }
