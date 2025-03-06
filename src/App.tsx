@@ -13,6 +13,7 @@ import Phase2TestsAndQuestionnaires from "./pages/Phase2TestsAndQuestionnaires.j
 import Login from "./pages/Login.js";
 import ResetPassword from "./pages/ResetPassword.js";
 import Register from "./pages/Register.js";
+import StatisticalAnalysis from "./pages/StatisticalAnalysis.js";
 
 function App() {
   return (
@@ -44,6 +45,7 @@ function App() {
         path="/exportar/fase2-testes-questionarios"
         element={<Phase2TestsAndQuestionnaires />}
       />
+      <Route path="/analises-estatisticas" element={<StatisticalAnalysis />} />
     </Routes>
   );
 }

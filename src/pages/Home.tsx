@@ -147,6 +147,23 @@ function Home() {
               Acessar exportação →
             </Link>
           </div>
+
+          {/* Análises Estatísticas */}
+          <div className="bg-white p-8 rounded-lg shadow-lg hover:shadow-xl transition">
+            <h3 className="text-2xl font-bold text-gray-900 mb-4">
+              Análises Estatísticas
+            </h3>
+            <p className="text-gray-500">
+              Realize análises estatísticas avançadas sobre os dados dos
+              pacientes.
+            </p>
+            <Link
+              to="/analises-estatisticas"
+              className="text-indigo-600 mt-4 inline-block hover:underline"
+            >
+              Acessar análises →
+            </Link>
+          </div>
         </div>
       </div>
     </div>
