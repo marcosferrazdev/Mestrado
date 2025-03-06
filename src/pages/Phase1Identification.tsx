@@ -185,6 +185,10 @@ const comorbidityMap: { [key: string]: string } = {
   "Problema auditivo": "19",
 };
 const comorbidityOptions = Object.keys(comorbidityMap);
+const comorbiditySelectOptions = comorbidityOptions.map((option) => ({
+  value: option,
+  label: option,
+}));
 
 const conditionMap: { [key: string]: string } = {
   Fibrose: "1",
@@ -766,6 +770,7 @@ function Phase1Identification() {
                       ))}
                     </select>
                   </td>
+                  {/* Coluna Medicamentos */}
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                     <Select
                       isMulti
@@ -830,33 +835,49 @@ function Phase1Identification() {
                       className="w-28 p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
                     />
                   </td>
+                  {/* Coluna Comorbidades Associadas utilizando react-select */}
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    <select
-                      value={patient.associatedComorbidities || ""}
-                      onChange={(e) => {
-                        if (comorbidityOptions.includes(e.target.value)) {
-                          handleFieldChange(
-                            patient.id,
-                            "associatedComorbidities",
-                            e.target.value
-                          );
-                        } else {
-                          toast.error(
-                            "Comorbidade não está nas opções permitidas!"
-                          );
-                        }
+                    <Select
+                      isMulti
+                      value={
+                        patient.associatedComorbidities
+                          ? patient.associatedComorbidities
+                              .split(",")
+                              .map((comorb: string) => ({
+                                value: comorb,
+                                label: comorb,
+                              }))
+                          : []
+                      }
+                      onChange={(
+                        newValue: MultiValue<{ value: string; label: string }>,
+                        actionMeta: ActionMeta<{ value: string; label: string }>
+                      ) => {
+                        const selectedValues = newValue.map(
+                          (option) => option.value
+                        );
+                        handleFieldChange(
+                          patient.id,
+                          "associatedComorbidities",
+                          selectedValues.join(",")
+                        );
                       }}
-                      className="w-48 p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                    >
-                      <option value="" disabled>
-                        Selecione
-                      </option>
-                      {comorbidityOptions.map((option) => (
-                        <option key={option} value={option}>
-                          {option}
-                        </option>
-                      ))}
-                    </select>
+                      options={comorbiditySelectOptions}
+                      styles={{
+                        control: (provided) => ({
+                          ...provided,
+                          minWidth: 250,
+                        }),
+                        menu: (provided) => ({
+                          ...provided,
+                          width: "auto",
+                          minWidth: 250,
+                        }),
+                      }}
+                      menuPortalTarget={document.body}
+                      className="basic-multi-select"
+                      classNamePrefix="select"
+                    />
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                     <input
