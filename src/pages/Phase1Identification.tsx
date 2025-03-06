@@ -774,6 +774,7 @@ function Phase1Identification() {
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                     <Select
                       isMulti
+                      placeholder="Selecione"
                       value={
                         patient.medications
                           ? patient.medications
@@ -835,10 +836,10 @@ function Phase1Identification() {
                       className="w-28 p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
                     />
                   </td>
-                  {/* Coluna Comorbidades Associadas utilizando react-select */}
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                     <Select
                       isMulti
+                      placeholder="Selecione"
                       value={
                         patient.associatedComorbidities
                           ? patient.associatedComorbidities
