@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import { Patient, usePatientStore } from "../store/usePatientStore.js";
 import { toast, Toaster } from "react-hot-toast";
+import Select, { ActionMeta, MultiValue } from "react-select";
 
 // Função para formatar a data no formato "DD/MM/AAAA"
 const formatDate = (dateString: string) => {
@@ -157,6 +158,10 @@ const medicationMap: { [key: string]: string } = {
   Antigotoso: "25",
 };
 const medicationOptions = Object.keys(medicationMap);
+const medicationSelectOptions = medicationOptions.map((option) => ({
+  value: option,
+  label: option,
+}));
 
 const comorbidityMap: { [key: string]: string } = {
   "Diabetes Mellitus": "1",
@@ -210,9 +215,7 @@ const convertListToNumbers = (
     .replace(/;/g, ",")
     .split(",")
     .map((item) => item.trim());
-  const numbers = items
-    .map((item) => map[item] || item) // Converte cada item para seu número correspondente, ou mantém o item se não for encontrado
-    .filter((num) => num); // Remove valores vazios
+  const numbers = items.map((item) => map[item] || item).filter((num) => num);
   return numbers.join(",");
 };
 
@@ -323,7 +326,6 @@ function Phase1Identification() {
   ) => {
     const updatedPatient = { [field]: value };
     await updatePatient(patientId, updatedPatient);
-    // Atualiza localmente para refletir a alteração
     setSortedPatients((prev) =>
       prev.map((p) => (p.id === patientId ? { ...p, [field]: value } : p))
     );
@@ -334,7 +336,6 @@ function Phase1Identification() {
     field: keyof Patient,
     value: string
   ) => {
-    // Validação para campos numéricos
     if (
       [
         "age",
@@ -349,10 +350,8 @@ function Phase1Identification() {
         toast.error(
           `O campo ${fieldNameMap[field]} só aceita valores numéricos!`
         );
-        // Esvazia o campo no Supabase
         const updatedPatient = { [field]: "" };
         await updatePatient(patientId, updatedPatient);
-        // Atualiza localmente para refletir o campo vazio
         setSortedPatients((prev) =>
           prev.map((p) => (p.id === patientId ? { ...p, [field]: "" } : p))
         );
@@ -362,7 +361,6 @@ function Phase1Identification() {
 
     const updatedPatient = { [field]: value };
     await updatePatient(patientId, updatedPatient);
-    // Atualiza localmente para refletir a alteração
     setSortedPatients((prev) =>
       prev.map((p) => (p.id === patientId ? { ...p, [field]: value } : p))
     );
@@ -528,10 +526,9 @@ function Phase1Identification() {
                     <input
                       type="text"
                       value={patient.age || ""}
-                      onChange={(e) => {
-                        const newPatient = { ...patient, age: e.target.value };
-                        handleFieldChange(patient.id, "age", e.target.value);
-                      }}
+                      onChange={(e) =>
+                        handleFieldChange(patient.id, "age", e.target.value)
+                      }
                       onBlur={() =>
                         handleTextFieldChange(
                           patient.id,
@@ -546,17 +543,13 @@ function Phase1Identification() {
                     <input
                       type="text"
                       value={patient.heightMeters || ""}
-                      onChange={(e) => {
-                        const newPatient = {
-                          ...patient,
-                          heightMeters: e.target.value,
-                        };
+                      onChange={(e) =>
                         handleFieldChange(
                           patient.id,
                           "heightMeters",
                           e.target.value
-                        );
-                      }}
+                        )
+                      }
                       onBlur={() =>
                         handleTextFieldChange(
                           patient.id,
@@ -571,13 +564,9 @@ function Phase1Identification() {
                     <input
                       type="text"
                       value={patient.weight || ""}
-                      onChange={(e) => {
-                        const newPatient = {
-                          ...patient,
-                          weight: e.target.value,
-                        };
-                        handleFieldChange(patient.id, "weight", e.target.value);
-                      }}
+                      onChange={(e) =>
+                        handleFieldChange(patient.id, "weight", e.target.value)
+                      }
                       onBlur={() =>
                         handleTextFieldChange(
                           patient.id,
@@ -592,10 +581,9 @@ function Phase1Identification() {
                     <input
                       type="text"
                       value={patient.imc || ""}
-                      onChange={(e) => {
-                        const newPatient = { ...patient, imc: e.target.value };
-                        handleFieldChange(patient.id, "imc", e.target.value);
-                      }}
+                      onChange={(e) =>
+                        handleFieldChange(patient.id, "imc", e.target.value)
+                      }
                       onBlur={() =>
                         handleTextFieldChange(
                           patient.id,
@@ -779,48 +767,59 @@ function Phase1Identification() {
                     </select>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    <select
-                      value={patient.medications || ""}
-                      onChange={(e) => {
-                        if (medicationOptions.includes(e.target.value)) {
-                          handleFieldChange(
-                            patient.id,
-                            "medications",
-                            e.target.value
-                          );
-                        } else {
-                          toast.error(
-                            "Medicamento não está nas opções permitidas!"
-                          );
-                        }
+                    <Select
+                      isMulti
+                      value={
+                        patient.medications
+                          ? patient.medications
+                              .split(",")
+                              .map((med: string) => ({
+                                value: med,
+                                label: med,
+                              }))
+                          : []
+                      }
+                      onChange={(
+                        newValue: MultiValue<{ value: string; label: string }>,
+                        actionMeta: ActionMeta<{ value: string; label: string }>
+                      ) => {
+                        const selectedValues = newValue.map(
+                          (option) => option.value
+                        );
+                        handleFieldChange(
+                          patient.id,
+                          "medications",
+                          selectedValues.join(",")
+                        );
                       }}
-                      className="w-48 p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                    >
-                      <option value="" disabled>
-                        Selecione
-                      </option>
-                      {medicationOptions.map((option) => (
-                        <option key={option} value={option}>
-                          {option}
-                        </option>
-                      ))}
-                    </select>
+                      options={medicationSelectOptions}
+                      styles={{
+                        control: (provided) => ({
+                          ...provided,
+                          minWidth: 250,
+                        }),
+                        menu: (provided) => ({
+                          ...provided,
+                          width: "auto",
+                          minWidth: 250,
+                        }),
+                      }}
+                      menuPortalTarget={document.body}
+                      className="basic-multi-select"
+                      classNamePrefix="select"
+                    />
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                     <input
                       type="text"
                       value={patient.satAtRest || ""}
-                      onChange={(e) => {
-                        const newPatient = {
-                          ...patient,
-                          satAtRest: e.target.value,
-                        };
+                      onChange={(e) =>
                         handleFieldChange(
                           patient.id,
                           "satAtRest",
                           e.target.value
-                        );
-                      }}
+                        )
+                      }
                       onBlur={() =>
                         handleTextFieldChange(
                           patient.id,
@@ -863,17 +862,13 @@ function Phase1Identification() {
                     <input
                       type="text"
                       value={patient.charlsonComorbidityIndex || ""}
-                      onChange={(e) => {
-                        const newPatient = {
-                          ...patient,
-                          charlsonComorbidityIndex: e.target.value,
-                        };
+                      onChange={(e) =>
                         handleFieldChange(
                           patient.id,
                           "charlsonComorbidityIndex",
                           e.target.value
-                        );
-                      }}
+                        )
+                      }
                       onBlur={() =>
                         handleTextFieldChange(
                           patient.id,
