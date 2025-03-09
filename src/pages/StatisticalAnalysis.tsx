@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
-import { Patient, usePatientStore } from "../store/usePatientStore.js";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { usePatientStore } from "../store/usePatientStore.js";
+import NormalityTest from "./AnalisyStatics/NormalityTest.js";
 
 // Função para calcular estatísticas descritivas (média, desvio padrão, min, max)
 const calculateDescriptiveStats = (data: number[]) => {
@@ -232,6 +233,7 @@ function StatisticalAnalysis() {
         ...regressionResults,
       });
     }
+    // Não é necessário tratar "normality" aqui, pois o componente <NormalityTest> será exibido.
   };
 
   return (
@@ -254,7 +256,7 @@ function StatisticalAnalysis() {
             </h2>
             <button
               onClick={handleSelectAll}
-              className="mb-4 py-1 px-3 rounded-md text-white font-medium bg-blue-600 hover:bg-blue-700 text-sm" // Botão menor
+              className="mb-4 py-1 px-3 rounded-md text-white font-medium bg-blue-600 hover:bg-blue-700 text-sm"
             >
               {selectedPatients.size === patients.length
                 ? "Desmarcar Todos"
@@ -271,14 +273,13 @@ function StatisticalAnalysis() {
                     className="mr-2"
                   />
                   <label htmlFor={patient.id} className="text-sm text-gray-700">
-                    {patient.name} {/* Removido (ID: {patient.id}) */}
+                    {patient.name}
                   </label>
                 </div>
               ))}
             </div>
             <p className="mt-2 text-gray-600">
-              Pacientes selecionados: {selectedPatients.size} de{" "}
-              {patients.length}
+              Pacientes selecionados: {selectedPatients.size} de {patients.length}
             </p>
           </div>
 
@@ -317,102 +318,113 @@ function StatisticalAnalysis() {
             >
               Regressão Linear
             </button>
+            <button
+              onClick={() => setSelectedAnalysis("normality")}
+              className="py-2 px-4 rounded-md text-white font-medium bg-blue-600 hover:bg-blue-700"
+            >
+              Teste de Normalidade
+            </button>
           </div>
 
-          {results && (
-            <div className="mt-6">
-              <h3 className="text-lg font-semibold mb-2">Resultados</h3>
-              <div className="bg-gray-50 p-4 rounded-md">
-                {selectedAnalysis === "descriptive" && (
-                  <>
-                    <p>
-                      <strong>Variável:</strong> {results.variable}
-                    </p>
-                    <p>
-                      <strong>Média:</strong> {results.mean.toFixed(2)}
-                    </p>
-                    <p>
-                      <strong>Desvio Padrão:</strong>{" "}
-                      {results.stdDev.toFixed(2)}
-                    </p>
-                    <p>
-                      <strong>Mínimo:</strong> {results.min}
-                    </p>
-                    <p>
-                      <strong>Máximo:</strong> {results.max}
-                    </p>
-                  </>
-                )}
-                {selectedAnalysis === "ttest" && (
-                  <>
-                    <p>
-                      <strong>Variável:</strong> {results.variable}
-                    </p>
-                    <p>
-                      <strong>Média ({results.group1}):</strong>{" "}
-                      {results.mean1.toFixed(2)}
-                    </p>
-                    <p>
-                      <strong>Média ({results.group2}):</strong>{" "}
-                      {results.mean2.toFixed(2)}
-                    </p>
-                    <p>
-                      <strong>Estatística t:</strong> {results.tStat.toFixed(2)}
-                    </p>
-                  </>
-                )}
-                {selectedAnalysis === "anova" && (
-                  <>
-                    <p>
-                      <strong>Variável:</strong> {results.variable}
-                    </p>
-                    {results.groups.map((group: string, i: number) => (
-                      <p key={i}>
-                        <strong>Média ({group}):</strong>{" "}
-                        {results.groupMeans[i].toFixed(2)}
+          {/* Exibe os resultados dos testes realizados ou o componente de normalidade */}
+          {selectedAnalysis === "normality" ? (
+            <NormalityTest selectedPatients={getSelectedPatients()} />
+            ) : (
+            results && (
+              <div className="mt-6">
+                <h3 className="text-lg font-semibold mb-2">Resultados</h3>
+                <div className="bg-gray-50 p-4 rounded-md">
+                  {selectedAnalysis === "descriptive" && (
+                    <>
+                      <p>
+                        <strong>Variável:</strong> {results.variable}
                       </p>
-                    ))}
-                    <p>
-                      <strong>Estatística F:</strong> {results.fStat.toFixed(2)}
-                    </p>
-                  </>
-                )}
-                {selectedAnalysis === "correlation" && (
-                  <>
-                    <p>
-                      <strong>Variável 1:</strong> {results.variable1}
-                    </p>
-                    <p>
-                      <strong>Variável 2:</strong> {results.variable2}
-                    </p>
-                    <p>
-                      <strong>Correlação de Pearson:</strong>{" "}
-                      {results.correlation.toFixed(2)}
-                    </p>
-                  </>
-                )}
-                {selectedAnalysis === "regression" && (
-                  <>
-                    <p>
-                      <strong>Variável Independente:</strong>{" "}
-                      {results.independentVariable}
-                    </p>
-                    <p>
-                      <strong>Variável Dependente:</strong>{" "}
-                      {results.dependentVariable}
-                    </p>
-                    <p>
-                      <strong>Coeficiente (slope):</strong>{" "}
-                      {results.slope.toFixed(2)}
-                    </p>
-                    <p>
-                      <strong>Intercepto:</strong>{" "}
-                      {results.intercept.toFixed(2)}
-                    </p>
-                  </>
-                )}
+                      <p>
+                        <strong>Média:</strong> {results.mean.toFixed(2)}
+                      </p>
+                      <p>
+                        <strong>Desvio Padrão:</strong>{" "}
+                        {results.stdDev.toFixed(2)}
+                      </p>
+                      <p>
+                        <strong>Mínimo:</strong> {results.min}
+                      </p>
+                      <p>
+                        <strong>Máximo:</strong> {results.max}
+                      </p>
+                    </>
+                  )}
+                  {selectedAnalysis === "ttest" && (
+                    <>
+                      <p>
+                        <strong>Variável:</strong> {results.variable}
+                      </p>
+                      <p>
+                        <strong>Média ({results.group1}):</strong>{" "}
+                        {results.mean1.toFixed(2)}
+                      </p>
+                      <p>
+                        <strong>Média ({results.group2}):</strong>{" "}
+                        {results.mean2.toFixed(2)}
+                      </p>
+                      <p>
+                        <strong>Estatística t:</strong> {results.tStat.toFixed(2)}
+                      </p>
+                    </>
+                  )}
+                  {selectedAnalysis === "anova" && (
+                    <>
+                      <p>
+                        <strong>Variável:</strong> {results.variable}
+                      </p>
+                      {results.groups.map((group: string, i: number) => (
+                        <p key={i}>
+                          <strong>Média ({group}):</strong>{" "}
+                          {results.groupMeans[i].toFixed(2)}
+                        </p>
+                      ))}
+                      <p>
+                        <strong>Estatística F:</strong> {results.fStat.toFixed(2)}
+                      </p>
+                    </>
+                  )}
+                  {selectedAnalysis === "correlation" && (
+                    <>
+                      <p>
+                        <strong>Variável 1:</strong> {results.variable1}
+                      </p>
+                      <p>
+                        <strong>Variável 2:</strong> {results.variable2}
+                      </p>
+                      <p>
+                        <strong>Correlação de Pearson:</strong>{" "}
+                        {results.correlation.toFixed(2)}
+                      </p>
+                    </>
+                  )}
+                  {selectedAnalysis === "regression" && (
+                    <>
+                      <p>
+                        <strong>Variável Independente:</strong>{" "}
+                        {results.independentVariable}
+                      </p>
+                      <p>
+                        <strong>Variável Dependente:</strong>{" "}
+                        {results.dependentVariable}
+                      </p>
+                      <p>
+                        <strong>Coeficiente (slope):</strong>{" "}
+                        {results.slope.toFixed(2)}
+                      </p>
+                      <p>
+                        <strong>Intercepto:</strong>{" "}
+                        {results.intercept.toFixed(2)}
+                      </p>
+                    </>
+                  )}
+                </div>
               </div>
-            </div>
+            )
           )}
         </div>
       </div>
