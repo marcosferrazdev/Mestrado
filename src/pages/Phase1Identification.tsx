@@ -1,16 +1,17 @@
-import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
-import { Patient, usePatientStore } from "../store/usePatientStore.js";
-import { toast, Toaster } from "react-hot-toast";
+import { useEffect, useState } from "react";
+import { toast } from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 import Select, { ActionMeta, MultiValue } from "react-select";
+import { Patient, usePatientStore } from "../store/usePatientStore.js";
 
 // Função para formatar a data no formato "DD/MM/AAAA"
-const formatDate = (dateString: string) => {
-  if (!dateString) return "";
-  const date = new Date(dateString);
+const formatDate = (dateInput: string | Date | null): string => {
+  if (!dateInput) return "";
+  const date = typeof dateInput === "string" ? new Date(dateInput) : dateInput;
   return date.toLocaleDateString("pt-BR");
 };
+
 
 // Função para validar se o valor é numérico
 const isNumeric = (value: string): boolean => {
@@ -209,6 +210,13 @@ const sortPatientsByName = (patients: Patient[]): Patient[] => {
   return [...patients].sort((a, b) => a.name.localeCompare(b.name));
 };
 
+const formatCSVField = (value: string | number | null | undefined): string => {
+  if (value === null || value === undefined) return "";
+  // Converte para string e envolve em aspas
+  return `"${value.toString().replace(/"/g, '""')}"`;
+};
+
+
 // Função para converter uma lista de valores separados por vírgula ou ponto e vírgula em números
 const convertListToNumbers = (
   list: string | undefined,
@@ -222,6 +230,14 @@ const convertListToNumbers = (
   const numbers = items.map((item) => map[item] || item).filter((num) => num);
   return numbers.join(",");
 };
+
+const add6MonthsToDateString = (dateString: string): Date | null => {
+  if (!dateString) return null;
+  const date = new Date(dateString);
+  date.setMonth(date.getMonth() + 6);
+  return date;
+};
+
 
 // Função para exportar os dados para CSV com valores numéricos
 const exportToCSV = (patients: Patient[]) => {
@@ -252,42 +268,57 @@ const exportToCSV = (patients: Patient[]) => {
     "Condição de Saúde",
   ];
 
-  const rows = patients.map((patient) => {
-    return [
-      `"${patient.name}"`,
-      patient.phase?.replace("FASE ", "") || "",
-      `"${patient.phone}"`,
-      recruitmentCityMap[patient.recruitmentCity] ||
-        patient.recruitmentCity ||
-        "",
-      formatDate(patient.nextCollectionDate),
-      formatDate(patient.nextCollectionDate),
-      sexMap[patient.sex] || patient.sex || "",
-      patient.age || "",
-      patient.heightMeters || "",
-      patient.weight || "",
-      patient.imc || "",
+ const rows = patients.map((patient) => {
+  return [
+    formatCSVField(patient.name),
+    formatCSVField(patient.phase?.replace("FASE ", "") || ""),
+    formatCSVField(patient.phone),
+    formatCSVField(
+      recruitmentCityMap[patient.recruitmentCity] || patient.recruitmentCity || ""
+    ),
+    formatCSVField(formatDate(patient.collectionDate)),
+    formatCSVField(formatDate(add6MonthsToDateString(patient.collectionDate))),
+    formatCSVField(sexMap[patient.sex] || patient.sex || ""),
+    formatCSVField(patient.age || ""),
+    formatCSVField(patient.heightMeters || ""),
+    formatCSVField(patient.weight || ""),
+    formatCSVField(patient.imc || ""),
+    formatCSVField(
       imcClassificationMap[patient.imcClassification] ||
-        patient.imcClassification ||
-        "",
-      educationMap[patient.education] || patient.education || "",
-      raceMap[patient.race] || patient.race || "",
-      maritalStatusMap[patient.maritalStatus] || patient.maritalStatus || "",
-      professionMap[patient.profession] || patient.profession || "",
-      smokingHistoryMap[patient.smokingHistory] || patient.smokingHistory || "",
+      patient.imcClassification ||
+      ""
+    ),
+    formatCSVField(educationMap[patient.education] || patient.education || ""),
+    formatCSVField(raceMap[patient.race] || patient.race || ""),
+    formatCSVField(
+      maritalStatusMap[patient.maritalStatus] || patient.maritalStatus || ""
+    ),
+    formatCSVField(professionMap[patient.profession] || patient.profession || ""),
+    formatCSVField(
+      smokingHistoryMap[patient.smokingHistory] || patient.smokingHistory || ""
+    ),
+    formatCSVField(
       smokingHistoryMap[patient.passiveSmokingHistory] ||
-        patient.passiveSmokingHistory ||
-        "",
+      patient.passiveSmokingHistory ||
+      ""
+    ),
+    formatCSVField(
       stoveExposureMap[patient.stoveExposureHistory] ||
-        patient.stoveExposureHistory ||
-        "",
-      convertListToNumbers(patient.medications, medicationMap),
-      patient.satAtRest || "",
-      convertListToNumbers(patient.associatedComorbidities, comorbidityMap),
-      patient.charlsonComorbidityIndex || "",
-      conditionMap[patient.healthCondition] || patient.healthCondition || "",
-    ].join(",");
-  });
+      patient.stoveExposureHistory ||
+      ""
+    ),
+    formatCSVField(convertListToNumbers(patient.medications, medicationMap)),
+    formatCSVField(patient.satAtRest || ""),
+    formatCSVField(
+      convertListToNumbers(patient.associatedComorbidities, comorbidityMap)
+    ),
+    formatCSVField(patient.charlsonComorbidityIndex || ""),
+    formatCSVField(
+      conditionMap[patient.healthCondition] || patient.healthCondition || ""
+    ),
+  ].join(",");
+});
+
 
   const csvContent = [headers.join(","), ...rows].join("\n");
   const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
@@ -336,39 +367,47 @@ function Phase1Identification() {
   };
 
   const handleTextFieldChange = async (
-    patientId: string,
-    field: keyof Patient,
-    value: string
-  ) => {
-    if (
-      [
-        "age",
-        "heightMeters",
-        "weight",
-        "imc",
-        "satAtRest",
-        "charlsonComorbidityIndex",
-      ].includes(field)
-    ) {
-      if (!isNumeric(value) && value !== "") {
-        toast.error(
-          `O campo ${fieldNameMap[field]} só aceita valores numéricos!`
-        );
-        const updatedPatient = { [field]: "" };
-        await updatePatient(patientId, updatedPatient);
-        setSortedPatients((prev) =>
-          prev.map((p) => (p.id === patientId ? { ...p, [field]: "" } : p))
-        );
-        return;
-      }
-    }
+  patientId: string,
+  field: keyof Patient,
+  value: string
+) => {
+  // Para campos numéricos, converte a vírgula em ponto
+  const numericFields = [
+    "age",
+    "heightMeters",
+    "weight",
+    "imc",
+    "satAtRest",
+    "charlsonComorbidityIndex",
+  ];
 
-    const updatedPatient = { [field]: value };
-    await updatePatient(patientId, updatedPatient);
-    setSortedPatients((prev) =>
-      prev.map((p) => (p.id === patientId ? { ...p, [field]: value } : p))
-    );
-  };
+  if (numericFields.includes(field)) {
+    // Usa parseNumber para converter "1,4" em 1.4
+    const parsedValue = parseNumber(value);
+    // Se o valor convertido não é um número (NaN), exibe um erro
+    if (isNaN(parsedValue)) {
+      toast.error(`O campo ${fieldNameMap[field]} só aceita valores numéricos!`);
+      const updatedPatient = { [field]: "" };
+      await updatePatient(patientId, updatedPatient);
+      setSortedPatients((prev) =>
+        prev.map((p) => (p.id === patientId ? { ...p, [field]: "" } : p))
+      );
+      return;
+    }
+    value = parsedValue.toString();
+  }
+
+  const updatedPatient = { [field]: value };
+  await updatePatient(patientId, updatedPatient);
+  setSortedPatients((prev) =>
+    prev.map((p) => (p.id === patientId ? { ...p, [field]: value } : p))
+  );
+};
+
+const parseNumber = (value: string): number => {
+  return parseFloat(value.replace(",", "."));
+};
+
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col py-6 px-6">
@@ -503,10 +542,10 @@ function Phase1Identification() {
                     </select>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {formatDate(patient.nextCollectionDate)}
+                    {formatDate(patient.collectionDate)}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {formatDate(patient.nextCollectionDate)}
+                    {formatDate(add6MonthsToDateString(patient.collectionDate))}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                     <select

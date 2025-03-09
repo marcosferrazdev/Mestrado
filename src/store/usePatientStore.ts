@@ -10,7 +10,7 @@ export interface Patient {
   callComments: string;
   transportation: "próprio" | "não próprio";
   recruitmentCity: string;
-  nextCollectionDate: string;
+  collectionDate: string;
   sex: string;
   age: string;
   heightMeters: string;

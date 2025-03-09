@@ -11,7 +11,7 @@ const candidateSchema = z.object({
   recruitmentCity: z.string().min(1, "Cidade de Recrutamento é obrigatória"),
   diagnosis: z.string().min(1, "Diagnóstico é obrigatório"),
   phase: z.string().min(1, "Fase é obrigatória"),
-  nextCollectionDate: z.string().min(1, "Data da próxima coleta é obrigatória"),
+  collectionDate: z.string().min(1, "Data da próxima coleta é obrigatória"),
   callComments: z.string(),
   transportation: z.enum(["próprio", "não próprio"], {
     required_error: "Selecione o tipo de transporte",
@@ -159,16 +159,16 @@ function CandidateRegistration() {
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700">
-                      Data da Próxima Coleta
+                      Data da Coleta
                     </label>
                     <input
                       type="date"
-                      {...register("nextCollectionDate")}
+                      {...register("collectionDate")}
                       className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2 border"
                     />
-                    {errors.nextCollectionDate && (
+                    {errors.collectionDate && (
                       <p className="text-red-500 text-sm mt-1">
-                        {errors.nextCollectionDate.message}
+                        {errors.collectionDate.message}
                       </p>
                     )}
                   </div>

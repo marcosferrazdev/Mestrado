@@ -1,10 +1,10 @@
-import React, { useEffect, useState, useRef } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import jsPDF from "jspdf";
 import { ArrowLeft, Download } from "lucide-react";
 import OpenAI from "openai";
-import { Patient, usePatientStore } from "../store/usePatientStore.js";
-import jsPDF from "jspdf";
 import type { ChatCompletionMessageParam } from "openai/resources/chat/completions";
+import React, { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Patient, usePatientStore } from "../store/usePatientStore.js";
 
 const openai = new OpenAI({
   apiKey: import.meta.env.VITE_OPENAI_API_KEY,
@@ -261,7 +261,7 @@ function Relatorios() {
       Pesquisador Responsável: Vanessa Pereira de Lima
       Cidade de Recrutamento: ${selectedPatient.recruitmentCity}
       Fase: ${selectedPatient.phase}
-      Próxima Coleta: ${formatDate(selectedPatient.nextCollectionDate)}
+      Próxima Coleta: ${formatDate(selectedPatient.collectionDate)}
       TC6-1: ${selectedPatient.tc6_1 || "Não disponível"}
       TC6-2: ${selectedPatient.tc6_2 || "Não disponível"}
       TPP: ${selectedPatient.tpp || "Não disponível"}

@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import { ArrowLeft, Edit, Trash2 } from "lucide-react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ArrowLeft, Trash2, Edit } from "lucide-react";
 import { Patient, usePatientStore } from "../store/usePatientStore.js";
 
 // Função para formatar a data no formato "DD/MM/YYYY"
@@ -86,7 +86,7 @@ function PatientList() {
                 </p>
                 <p className="text-gray-700">
                   <span className="font-semibold">Próx. Coleta:</span>{" "}
-                  {formatDate(patient.nextCollectionDate)}
+                  {formatDate(patient.collectionDate)}
                 </p>
                 <p className="text-gray-700">
                   <span className="font-semibold">Comentário:</span>{" "}

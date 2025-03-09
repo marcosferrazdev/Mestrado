@@ -1,9 +1,9 @@
-import React, { useEffect } from 'react';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
+import { useEffect } from 'react';
+import { useForm } from 'react-hook-form';
+import { useNavigate, useParams } from 'react-router-dom';
+import { z } from 'zod';
 import { Patient, usePatientStore } from '../store/usePatientStore.js';
 
 const patientSchema = z.object({
@@ -12,7 +12,7 @@ const patientSchema = z.object({
   recruitmentCity: z.string().min(1, 'Cidade de Recrutamento é obrigatória'),
   diagnosis: z.string().min(1, 'Diagnóstico é obrigatório'),
   phase: z.string().min(1, 'Fase é obrigatória'),
-  nextCollectionDate: z.string().min(1, 'Data da próxima coleta é obrigatória'),
+  collectionDate: z.string().min(1, 'Data da próxima coleta é obrigatória'),
   callComments: z.string().optional(),
   transportation: z.enum(['próprio', 'não próprio'], {
     required_error: 'Selecione o tipo de transporte',
@@ -91,8 +91,8 @@ function EditPatient() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700">Data da Próxima Coleta</label>
-                <input type="date" {...register('nextCollectionDate')} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2 border" />
-                {errors.nextCollectionDate && <p className="text-red-500 text-sm mt-1">{errors.nextCollectionDate.message}</p>}
+                <input type="date" {...register('collectionDate')} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2 border" />
+                {errors.collectionDate && <p className="text-red-500 text-sm mt-1">{errors.collectionDate.message}</p>}
               </div>
               <div>
               <label className="block text-sm font-medium text-gray-700">Comentário sobre Ligação</label>
