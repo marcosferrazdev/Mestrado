@@ -4,6 +4,7 @@ import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import Select, { ActionMeta, MultiValue } from "react-select";
 import { Patient, usePatientStore } from "../store/usePatientStore.js";
+import { NumericInput } from "./NumericInput.js";
 
 // Função para formatar a data no formato "DD/MM/AAAA"
 const formatDate = (dateInput: string | Date | null): string => {
@@ -572,37 +573,18 @@ const parseNumber = (value: string): number => {
                       onChange={(e) =>
                         handleFieldChange(patient.id, "age", e.target.value)
                       }
-                      onBlur={() =>
-                        handleTextFieldChange(
-                          patient.id,
-                          "age",
-                          patient.age || ""
-                        )
-                      }
+                     
                       className="w-20 p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
                     />
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    <input
-                      type="text"
-                      value={patient.heightMeters || ""}
-                      onChange={(e) =>
-                        handleFieldChange(
-                          patient.id,
-                          "heightMeters",
-                          e.target.value
-                        )
-                      }
-                      onBlur={() =>
-                        handleTextFieldChange(
-                          patient.id,
-                          "heightMeters",
-                          patient.heightMeters || ""
-                        )
-                      }
+                    <NumericInput
+                      initialValue={patient.heightMeters || ""}
+                      onCommit={(newValue) => handleFieldChange(patient.id, "heightMeters", newValue)}
                       className="w-20 p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
                     />
                   </td>
+
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                     <input
                       type="text"
@@ -610,13 +592,7 @@ const parseNumber = (value: string): number => {
                       onChange={(e) =>
                         handleFieldChange(patient.id, "weight", e.target.value)
                       }
-                      onBlur={() =>
-                        handleTextFieldChange(
-                          patient.id,
-                          "weight",
-                          patient.weight || ""
-                        )
-                      }
+                     
                       className="w-20 p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
                     />
                   </td>
@@ -627,13 +603,7 @@ const parseNumber = (value: string): number => {
                       onChange={(e) =>
                         handleFieldChange(patient.id, "imc", e.target.value)
                       }
-                      onBlur={() =>
-                        handleTextFieldChange(
-                          patient.id,
-                          "imc",
-                          patient.imc || ""
-                        )
-                      }
+                     
                       className="w-28 p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
                     />
                   </td>
