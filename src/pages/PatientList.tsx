@@ -85,7 +85,7 @@ function PatientList() {
                   <span className="font-semibold">Fase:</span> {patient.phase}
                 </p>
                 <p className="text-gray-700">
-                  <span className="font-semibold">Próx. Coleta:</span>{" "}
+                  <span className="font-semibold">Data da Coleta:</span>{" "}
                   {formatDate(patient.collectionDate)}
                 </p>
                 <p className="text-gray-700">

@@ -94,30 +94,30 @@ const maritalStatusMap: { [key: string]: string } = {
 const maritalStatusOptions = ["Solteiro", "Casado", "Divorciado", "Viúvo"];
 
 const professionMap: { [key: string]: string } = {
-  "do lar": "1",
-  aposentado: "2",
-  comerciante: "3",
-  "trabalhador rural": "4",
-  "funcionário público": "5",
-  professora: "6",
-  cabelereira: "7",
-  caixa: "8",
-  "policial penal": "9",
-  "serviços gerais": "10",
-  marteleiro: "11",
+  "Do lar": "1",
+  Aposentado: "2",
+  Comerciante: "3",
+  "Trabalhador rural": "4",
+  "Funcionário público": "5",
+  Professora: "6",
+  Cabelereira: "7",
+  Caixa: "8",
+  "Policial penal": "9",
+  "Serviços gerais": "10",
+  Marteleiro: "11",
 };
 const professionOptions = [
-  "do lar",
-  "aposentado",
-  "comerciante",
-  "trabalhador rural",
-  "funcionário público",
-  "professora",
-  "cabelereira",
-  "caixa",
-  "policial penal",
-  "serviços gerais",
-  "marteleiro",
+  "Do lar",
+  "Aposentado",
+  "Comerciante",
+  "Trabalhador rural",
+  "Funcionário público",
+  "Professora",
+  "Cabelereira",
+  "Caixa",
+  "Policial penal",
+  "Serviços gerais",
+  "Marteleiro",
 ];
 
 const smokingHistoryMap: { [key: string]: string } = {
@@ -185,6 +185,7 @@ const comorbidityMap: { [key: string]: string } = {
   Lombalgia: "17",
   Hipercolesterolemia: "18",
   "Problema auditivo": "19",
+  "Ulcera peptica": "20"
 };
 const comorbidityOptions = Object.keys(comorbidityMap);
 const comorbiditySelectOptions = comorbidityOptions.map((option) => ({
@@ -193,16 +194,15 @@ const comorbiditySelectOptions = comorbidityOptions.map((option) => ({
 }));
 
 const conditionMap: { [key: string]: string } = {
-  Fibrose: "1",
-  Reumatológica: "2",
-  "Ligada a atividade ocupacional": "3",
-  "Induzida por medicamento": "4",
-  "Pneumonite por hipersensibilidade": "5",
+  "Fibrose Idiopática": "1",
+  "Fibrose relacionada a dç Reumatológica": "2",
+  "Pneumoconiose ( ligada a atividade laboral)": "3",
+  "Fibrose Induzida por fármacos": "4",
+  "Pneumonite por hipersensibilidade(PH)": "5",
   "Pneumonia intersticial usual": "6",
   "Fibrose pós-COVID": "7",
-  "Doença mista do tecido conjuntivo": "8",
-  Sarcoidose: "9",
-  Silicose: "10",
+  "Sarcoidose": "8",
+  Silicose: "9",
 };
 const conditionOptions = Object.keys(conditionMap);
 
@@ -566,14 +566,10 @@ const parseNumber = (value: string): number => {
                       ))}
                     </select>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    <input
-                      type="text"
-                      value={patient.age || ""}
-                      onChange={(e) =>
-                        handleFieldChange(patient.id, "age", e.target.value)
-                      }
-                     
+                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    <NumericInput
+                      initialValue={patient.age || ""}
+                      onCommit={(newValue) => handleFieldChange(patient.id, "age", newValue)}
                       className="w-20 p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
                     />
                   </td>
@@ -586,27 +582,23 @@ const parseNumber = (value: string): number => {
                   </td>
 
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    <input
-                      type="text"
-                      value={patient.weight || ""}
-                      onChange={(e) =>
-                        handleFieldChange(patient.id, "weight", e.target.value)
+                    <NumericInput
+                      initialValue={patient.weight || ""}
+                      onCommit={(newValue) =>
+                        handleFieldChange(patient.id, "weight", newValue)
                       }
-                     
                       className="w-20 p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
                     />
                   </td>
+
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    <input
-                      type="text"
-                      value={patient.imc || ""}
-                      onChange={(e) =>
-                        handleFieldChange(patient.id, "imc", e.target.value)
-                      }
-                     
+                    <NumericInput
+                      initialValue={patient.imc || ""}
+                      onCommit={(newValue) => handleFieldChange(patient.id, "imc", newValue)}
                       className="w-28 p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
                     />
                   </td>
+
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                     <select
                       value={patient.imcClassification || ""}
@@ -692,27 +684,45 @@ const parseNumber = (value: string): number => {
                     </select>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    <select
-                      value={patient.profession || ""}
-                      onChange={(e) =>
-                        handleFieldChange(
-                          patient.id,
-                          "profession",
-                          e.target.value
-                        )
+                    <Select
+                      isMulti
+                      placeholder="Selecione"
+                      value={
+                        patient.profession
+                          ? patient.profession.split(",").map((prof: string) => ({
+                              value: prof,
+                              label: prof,
+                            }))
+                          : []
                       }
-                      className="w-48 p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                    >
-                      <option value="" disabled>
-                        Selecione
-                      </option>
-                      {professionOptions.map((option) => (
-                        <option key={option} value={option}>
-                          {option}
-                        </option>
-                      ))}
-                    </select>
+                      onChange={(
+                        newValue: MultiValue<{ value: string; label: string }>,
+                        actionMeta: ActionMeta<{ value: string; label: string }>
+                      ) => {
+                        const selectedValues = newValue.map((option) => option.value);
+                        handleFieldChange(patient.id, "profession", selectedValues.join(","));
+                      }}
+                      options={professionOptions.map((option) => ({
+                        value: option,
+                        label: option,
+                      }))}
+                      styles={{
+                        control: (provided) => ({
+                          ...provided,
+                          minWidth: 250,
+                        }),
+                        menu: (provided) => ({
+                          ...provided,
+                          width: "auto",
+                          minWidth: 250,
+                        }),
+                      }}
+                      menuPortalTarget={document.body}
+                      className="basic-multi-select"
+                      classNamePrefix="select"
+                    />
                   </td>
+
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                     <select
                       value={patient.smokingHistory || ""}
@@ -824,27 +834,16 @@ const parseNumber = (value: string): number => {
                       classNamePrefix="select"
                     />
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    <input
-                      type="text"
-                      value={patient.satAtRest || ""}
-                      onChange={(e) =>
-                        handleFieldChange(
-                          patient.id,
-                          "satAtRest",
-                          e.target.value
-                        )
-                      }
-                      onBlur={() =>
-                        handleTextFieldChange(
-                          patient.id,
-                          "satAtRest",
-                          patient.satAtRest || ""
-                        )
+                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    <NumericInput
+                      initialValue={patient.satAtRest || ""}
+                      onCommit={(newValue) =>
+                        handleFieldChange(patient.id, "satAtRest", newValue)
                       }
                       className="w-28 p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
                     />
                   </td>
+
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                     <Select
                       isMulti
@@ -890,26 +889,15 @@ const parseNumber = (value: string): number => {
                     />
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    <input
-                      type="text"
-                      value={patient.charlsonComorbidityIndex || ""}
-                      onChange={(e) =>
-                        handleFieldChange(
-                          patient.id,
-                          "charlsonComorbidityIndex",
-                          e.target.value
-                        )
-                      }
-                      onBlur={() =>
-                        handleTextFieldChange(
-                          patient.id,
-                          "charlsonComorbidityIndex",
-                          patient.charlsonComorbidityIndex || ""
-                        )
+                    <NumericInput
+                      initialValue={patient.charlsonComorbidityIndex || ""}
+                      onCommit={(newValue) =>
+                        handleFieldChange(patient.id, "charlsonComorbidityIndex", newValue)
                       }
                       className="w-28 p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
                     />
                   </td>
+
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                     <select
                       value={patient.healthCondition || ""}
