@@ -1,8 +1,8 @@
-import React, { useState } from "react";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
+import { z } from "zod";
 import { supabase } from "../services/supabaseClient.js";
 
 const candidateSchema = z.object({
@@ -49,7 +49,7 @@ function CandidateRegistration() {
       // Fecha a modal automaticamente após 2 segundos e redireciona
       setTimeout(() => {
         setShowSuccessModal(false);
-        navigate("/");
+        navigate("/home");
       }, 2000);
     } catch (error) {
       console.error("Erro inesperado:", error);
